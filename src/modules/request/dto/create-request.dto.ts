@@ -1,4 +1,3 @@
-// src/modules/request/dto/create-request.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRequestDto {
@@ -15,7 +14,7 @@ export class CreateRequestDto {
   designation: string;
 
   @ApiProperty()
-  niche: string;
+  domain: string;
 
   @ApiProperty()
   location: string;

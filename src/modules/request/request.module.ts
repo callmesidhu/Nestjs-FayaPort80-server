@@ -1,4 +1,3 @@
-// src/modules/request/request.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RequestEntity } from './request.entity';

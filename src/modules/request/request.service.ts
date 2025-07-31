@@ -1,5 +1,4 @@
-// src/modules/request/request.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RequestEntity } from './request.entity';
@@ -14,7 +13,14 @@ export class RequestService {
 
   async sendRequest(dto: CreateRequestDto) {
     const request = this.requestRepo.create(dto);
-    return this.requestRepo.save(request);
+    try {
+      return await this.requestRepo.save(request);
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new ConflictException('Email already exists');
+      }
+      throw new InternalServerErrorException();
+    }
   }
 
   async showAll() {

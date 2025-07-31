@@ -1,4 +1,3 @@
-// src/modules/request/request.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('requests')
@@ -9,7 +8,7 @@ export class RequestEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -19,7 +18,7 @@ export class RequestEntity {
   designation: string;
 
   @Column()
-  niche: string;
+  domain: string;
 
   @Column()
   location: string;
