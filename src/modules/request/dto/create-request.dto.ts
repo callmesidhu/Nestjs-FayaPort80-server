@@ -1,3 +1,4 @@
+// src/modules/request/dto/create-request.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRequestDto {
@@ -19,6 +20,9 @@ export class CreateRequestDto {
   @ApiProperty()
   location: string;
 
-  @ApiProperty({ maxLength: 300 })
+  @ApiProperty({ maxLength: 500 })
   reason: string;
+
+  @ApiProperty()
+  created_at: Date;
 }
