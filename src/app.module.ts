@@ -5,6 +5,7 @@ import { typeOrmConfig } from './config/typeorm.config';
 
 import { HealthModule } from './modules/health/health.module';
 import { RequestModule } from './modules/request/request.module';
+import { LandingModule } from './modules/landing/landing.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { RequestModule } from './modules/request/request.module';
     TypeOrmModule.forRootAsync({ useFactory: typeOrmConfig }),
     HealthModule,
     RequestModule,
+    LandingModule,
   ],
 })
 export class AppModule {}
