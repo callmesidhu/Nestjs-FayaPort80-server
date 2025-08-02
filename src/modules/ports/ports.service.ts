@@ -15,7 +15,7 @@ export class PortsService {
   async create(dto: CreatePortDto): Promise<Port> {
     const port: Partial<Port> = {
       ...dto,
-      uuid: uuidv4(), //
+      uuid: uuidv4(), 
     };
 
     const entity = this.portRepo.create(port);

@@ -2,10 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUrl, IsDateString } from 'class-validator';
 
 export class CreateEventDto {
-  @ApiProperty()
-  @IsString()
-  uuid: string;
-
+        
   @ApiProperty()
   @IsString()
   port_uuid: string;
