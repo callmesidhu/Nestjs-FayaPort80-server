@@ -1,5 +1,5 @@
 export class SignupAdminDto {
   email: string;
   password: string;
-  interest_group: string;
+  port_uuid: string;
 }

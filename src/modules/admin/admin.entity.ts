@@ -14,7 +14,7 @@ export class Admin {
   password: string;
 
   @Column()
-  interest_group: string;
+  port_uuid: string;
 
   @Column()
   uuid: string;
