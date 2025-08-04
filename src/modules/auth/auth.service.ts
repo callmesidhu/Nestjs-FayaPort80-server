@@ -46,4 +46,26 @@ export class AuthService {
       },
     };
   }
+
+  async refresh(refreshToken: string) {
+  try {
+    const payload = await this.jwtService.verifyAsync(refreshToken, {
+      secret: process.env.JWT_SECRET,
+    });
+
+    const admin = await this.adminRepo.findOne({ where: { id: payload.sub } });
+    if (!admin) throw new UnauthorizedException();
+
+    const newAccessToken = await this.jwtService.signAsync({
+      sub: admin.id,
+      email: admin.email,
+    }, { expiresIn: '1d' });
+
+    return {
+      accessToken: newAccessToken,
+    };
+  } catch (err) {
+    throw new UnauthorizedException('Invalid refresh token');
+  }
+}
 }
