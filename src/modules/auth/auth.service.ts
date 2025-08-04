@@ -1,4 +1,49 @@
-import { Injectable } from '@nestjs/common';
+// src/modules/auth/auth.service.ts
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Admin } from '../admin/admin.entity';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
-export class AuthService {}
+export class AuthService {
+  constructor(
+    @InjectRepository(Admin)
+    private adminRepo: Repository<Admin>,
+    private jwtService: JwtService
+  ) {}
+
+  async login(dto: LoginDto) {
+    const { email, password } = dto;
+    const admin = await this.adminRepo.findOne({ where: { email } });
+
+    if (!admin) throw new UnauthorizedException('Invalid credentials');
+
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
+
+    const accessToken = await this.jwtService.signAsync(
+      { sub: admin.id, email: admin.email },
+      { expiresIn: '1d' }
+    );
+
+    const refreshToken = await this.jwtService.signAsync(
+      { sub: admin.id },
+      { expiresIn: '7d' }
+    );
+
+    return {
+      message: 'Login successful',
+      accessToken,
+      refreshToken,
+      user: {
+        id: admin.id,
+        email: admin.email,
+        uuid: admin.uuid,
+        port_uuid: admin.port_uuid,
+      },
+    };
+  }
+}
