@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/c
 import { LandingService } from './landing.service';
 import { CreateLandingDto } from './dto/create-landing.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Landing')
 @Controller('api/landing')
 export class LandingController {
   constructor(private readonly landingService: LandingService) {}
