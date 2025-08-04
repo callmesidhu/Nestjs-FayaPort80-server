@@ -9,6 +9,8 @@ import { LandingModule } from './modules/landing/landing.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { PortsModule } from './modules/ports/ports.module';
 import { EventsModule } from './modules/events/events.module';
+import { AuthController } from './modules/auth/auth.controller';
+import { AuthModule } from './modules/auth/auth.module';
 
 
 @Module({
@@ -21,6 +23,8 @@ import { EventsModule } from './modules/events/events.module';
     AdminModule,
     PortsModule,
     EventsModule,
+    AuthModule,
   ],
+  controllers: [AuthController],
 })
 export class AppModule {}
