@@ -4,6 +4,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from '../admin/admin.entity';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -13,8 +15,8 @@ import { Admin } from '../admin/admin.entity';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  controllers: [AuthController],  // ✅ Controller
-  providers: [AuthService],       // ✅ Service
-  exports: [AuthService],         // Export if used in other modules
+  controllers: [AuthController], 
+ providers: [AuthService, JwtStrategy, JwtAuthGuard],
+   exports: [AuthService],         
 })
 export class AuthModule {}
