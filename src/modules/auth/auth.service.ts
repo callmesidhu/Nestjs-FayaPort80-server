@@ -1,4 +1,3 @@
-// src/modules/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -26,18 +25,46 @@ export class AuthService {
 
     const accessToken = await this.jwtService.signAsync(
       { sub: admin.id, email: admin.email },
-      { expiresIn: '1d' }
+      { expiresIn: '1d', secret: process.env.JWT_SECRET }
     );
 
     const refreshToken = await this.jwtService.signAsync(
       { sub: admin.id },
-      { expiresIn: '7d' }
+      { expiresIn: '7d', secret: process.env.JWT_SECRET }
     );
 
     return {
       message: 'Login successful',
       accessToken,
-      refreshToken,
+      refreshToken
+    };
+  }
+
+  async refresh(refreshToken: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: process.env.JWT_SECRET,
+      });
+
+      const admin = await this.adminRepo.findOne({ where: { id: payload.sub } });
+      if (!admin) throw new UnauthorizedException();
+
+      const newAccessToken = await this.jwtService.signAsync(
+        { sub: admin.id, email: admin.email },
+        { expiresIn: '1d', secret: process.env.JWT_SECRET }
+      );
+
+      return { accessToken: newAccessToken };
+    } catch (err) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async details(adminId: number) {
+    const admin = await this.adminRepo.findOne({ where: { id: adminId } });
+    if (!admin) throw new UnauthorizedException('User not found');
+
+    return {
       user: {
         id: admin.id,
         email: admin.email,
@@ -46,26 +73,4 @@ export class AuthService {
       },
     };
   }
-
-  async refresh(refreshToken: string) {
-  try {
-    const payload = await this.jwtService.verifyAsync(refreshToken, {
-      secret: process.env.JWT_SECRET,
-    });
-
-    const admin = await this.adminRepo.findOne({ where: { id: payload.sub } });
-    if (!admin) throw new UnauthorizedException();
-
-    const newAccessToken = await this.jwtService.signAsync({
-      sub: admin.id,
-      email: admin.email,
-    }, { expiresIn: '1d' });
-
-    return {
-      accessToken: newAccessToken,
-    };
-  } catch (err) {
-    throw new UnauthorizedException('Invalid refresh token');
-  }
-}
 }
