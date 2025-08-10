@@ -11,6 +11,7 @@ import { PortsModule } from './modules/ports/ports.module';
 import { EventsModule } from './modules/events/events.module';
 import { AuthController } from './modules/auth/auth.controller';
 import { AuthModule } from './modules/auth/auth.module';
+import { DriveModule } from './modules/drive/drive.module';
 
 
 @Module({
@@ -24,6 +25,7 @@ import { AuthModule } from './modules/auth/auth.module';
     PortsModule,
     EventsModule,
     AuthModule,
+    DriveModule,
   ],
   controllers: [AuthController],
 })
