@@ -12,17 +12,24 @@ async function bootstrap() {
   const allowedOrigins = process.env.CORS_ORIGINS?.split(',').map(o => o.trim()) || [];
 
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  });
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow non-browser requests
+
+    const normalizedOrigin = origin.replace(/\/$/, ""); // remove trailing slash
+    const allowed = allowedOrigins.map(o => o.replace(/\/$/, "")); // remove slash in list
+
+    if (allowed.includes(normalizedOrigin)) {
+      callback(null, true);
+    } else {
+      console.error(`❌ CORS blocked: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+});
+
 
   app.use('/storage', express.static(join(__dirname, '..', 'storage')));
 
